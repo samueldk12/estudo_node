@@ -2,9 +2,9 @@ const fs = require('fs/promises');
 
 (async () => {
     const CREATE_FILE = "create a file"
-    const DELETE_FILE = "delete a file"
+    const DELETE_FILE = "delete the file"
     const RENAME_FILE = "rename the file"
-    const ADD_TO_FILE = "add a file"
+    const ADD_TO_FILE = "add to file"
 
 
     const createFile = async (path) => {
@@ -20,16 +20,35 @@ const fs = require('fs/promises');
     };
 
     const deleteFile = async (path) => {
-        console.log('deleting' + path)
+        try{
+            await fs.rm(path)
+            return console.log("the file deleted!")
+        }catch(e){
+            console.log('Problem to delete the file', e)
+        }
     }
 
 
     const renameFile = async (oldPath, newPath) => {
-        console.log('rename ' + oldPath + '  ;  ' + newPath)
+        try{
+            await fs.rename(oldPath, newPath)
+            console.log('rename ' + oldPath + '  ;  ' + newPath)
+            return console.log("rename File name!")
+
+        }catch(e){
+            console.log('Problem to rename the file', e)
+        }
     } 
 
     const addToFile = async (path, text) => {
-        console.log('addToFile ' + path + '  ;  ' + text)
+        try{
+            const newFileHandle = await fs.open(path,'a')
+            console.log('A text was add to the file.')
+            await newFileHandle.appendFile(text)
+            newFileHandle.close() 
+        }catch(e){
+            console.log('Problem to add the text to the file', e)
+        }
     }
 
     const commandFileHandler = await fs.open("./command.txt", "r")
@@ -54,7 +73,7 @@ const fs = require('fs/promises');
 
             if (command.includes(DELETE_FILE)){
                 const filePath = command.substring(DELETE_FILE.length + 1)
-
+                console.log('DELETE', filePath)
                 deleteFile(filePath)
             }
 

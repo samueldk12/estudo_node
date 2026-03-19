@@ -1,1 +1,0 @@
-rename the file command.txt to comand.txt
